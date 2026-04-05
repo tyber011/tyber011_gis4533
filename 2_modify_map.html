@@ -1,5 +1,5 @@
 <!-- 
-    Assignment 1: Modify a leaflet web map
+    Assignment 2: Modify a leaflet web map
     In this assignment you will start with a working web map, and then modify and add to it.
 
     Task:
@@ -24,37 +24,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Most Basic Web Map</title>
+    <title>Hiking trails of Duluth, MN</title>
     
     <!-- Leaflet CSS stylesheet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
-    <style></style>
+    <!-- edit: added CCS code to stylize web page -->
+        <style>
+            body{
+                background-color:darkolivegreen;
+            }
+            h1{
+                font-family: Verdana;
+                font-weight: bold;
+                color: white;
+                text-shadow: 2px 2px 3px black;
+            }
+            h2{
+                font-family: Verdana;
+                font-style: italic;
+                color: lightgray;
+                text-shadow: 1px 1px 2px black;
+            }
+            .maindesc{
+                font-family: Verdana;
+                color: white;
+            }
+        </style>
 </head>
 <body>
     <!-- Header at the top of the page -->
     <div class="header">
-        <h1>A Mostly Basic Web Map</h1>
-        <h3>by: Your Name Here</h3>
+        <!-- edit: changed title and name and added a descriptive paragraph-->
+        <h1>Hiking Trails Near the Univeristy of Minnesota Duluth</h1>
+        <h2>By: Ben Tyberg</h2>
+        <p class="maindesc">Nothern Minnesota is known as a great place to get outdoors. While some excellent state parks lay both north of Duluth along the shore and south down the St. Louis River, there is no need to travel outside the city to find fabulous hiking options. Aimed towards students who may not be able to travel far, this map shows a few trails within walking distance of the Univeristy of Minnesota Duluth campus .</p>
     </div>
-    <div id="map" style="width: 600px; height: 400px;"></div>
+    <!-- edit: adjusted map size to 1400 by 575 -->
+    <div id="map" style="width: 1400px; height: 575px; align-items: center right;"></div>
     
+
+
     <!-- Leaflet JavaScript library -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <script>
         // Initialize the map, center it on UMD campus, and set the zoom level
-        const map = L.map('map').setView([46.82, -92.08], 13);
+        // edit: slightly changed default coordinates and zoom
+        const map = L.map('map').setView([46.8175, -92.08], 14);
 
         // Add OpenStreetMap tiles
-        const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
+        // edit: changed the basemap
+        var OpenStreetMap_France = L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+	    maxZoom: 20,
+	    attribution: '&copy; OpenStreetMap France | &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+        OpenStreetMap_France.addTo(map);
 
-        // Add a marker for the UMD campus
-        const marker = L.marker([46.82, -92.085]).addTo(map);
-        marker.bindPopup("<b>University of Minnesota Duluth</b><br>A great place to learn about GIS!").openPopup();
+        // edit: added an image and source to UMD page
+        const UMDmarker = L.marker([46.82, -92.085]).addTo(map);
+        const UMDhtml = `
+            <div>
+                <h3>University of Minnesota Duluth</h3>
+                <img width=250 src="https://admissions.d.umn.edu/sites/admissions.d.umn.edu/files/2025-06/website_headers_1200x404_41.png">
+                <br>
+                <em>Via UMD Admissions Office<em>
+            <div>
+        `;
+        UMDmarker.bindPopup(UMDhtml);
+
+        // edit: added three more marker for different trails around the city, each with a description, an image, and an image source
+        const chestermarker = L.marker([46.80424, -92.08683]).addTo(map);
+        const chesterhtml = `
+            <div>
+                <h3>Chester Creek Trail</h3>
+                <p>If you follow the Chester Creek trail, located on both sides of the creek, north, you will find Chester Park, home to even more hiking trails and even some for skiing. </p>
+                <img width=250 src="https://venture-out.s3.us-east-2.amazonaws.com/guide-images/1745685779813-media%3Fkey%3DAIzaSyCkpNVocP1IwgtIz1s4aaTb1GgwMdUtzBw%26maxHeightPx%3D800%26maxWidthPx%3D800">
+                <br>
+                <em>Via The Adventure Collection<em>
+            <div>
+        `;
+        chestermarker.bindPopup(chesterhtml);
+
+        const hartleymarker = L.marker([46.8296, -92.0875]).addTo(map);
+        const hartleyhtml = `
+            <div>
+                <h3>Hartley Park Trail</h3>
+                <p>Hartley Park also includes mountain bike trails, a portion of the Superior Hiking Trail, and places to kayak or canoe!</p>
+                <img width=300 src="https://visitduluth.com/wp-content/uploads/2022/08/DLTH_Web_Hero_Interior_1440x600_hiking.jpg">
+                <br>
+                <em>Via Visit Duluth<em>
+            <div>
+        `;
+        hartleymarker.bindPopup(hartleyhtml);
+
+        const tischermarker = L.marker([46.8188, -92.0579]).addTo(map);
+        const tischerhtml = `
+            <div>
+                <h3>Tischer Creek Trail</h3>
+                <p>The Tischer Creek Trail is part of the Congdon Park area. It features a delightful hiking trail along the creek with several waterfalls and small bluffs.</p>
+                <img width=250 src="https://odysseyresorts.com/wp-content/uploads/2021/01/tischer_creek_.jpg">
+                <br>
+                <em>Via Odyssey Resorts<em>
+            <div>
+        `;
+        tischermarker.bindPopup(tischerhtml);
+        
     </script>
 </body>
 </html>
