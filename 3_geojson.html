@@ -116,7 +116,7 @@
             return color;
         }
 
-        // edit: added popups for wach district
+        // edit: added popups for each district
         function attendanceAreasPopupOnEachFeature(feature, layer) {
             const popupContent = `
             <h3>Attendance Area Schools</h3>
@@ -124,6 +124,7 @@
             <p><em>middle school: </em><b>${feature.properties.MIDD_NAME}</b></p>
             <p><em>high school: </em><b>${feature.properties.HIGH_NAME}</b></p>
             `;
+            layer.bindPopup(popupContent);
         }
 
         // edit: added stylization to each district 
