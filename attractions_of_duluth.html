@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- edit: changed title to something more relevant -->
+    <title>Duluth, MN Attractions</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- CCS code to stylize web page -->
+        <style>
+            body{
+                background-color: rgb(29, 64, 141);
+            }
+            h1{
+                font-family: Calibri;
+                font-weight: bold;
+                color: white;
+                text-shadow: 2px 2px 3px black;
+            }
+            p{
+                font-family: Calibri;
+                color: black;
+            }
+            h2{
+                font-family: Calibri;
+                color: white
+            }
+            h3{
+                font-family: Calibri;
+                font-style: Bold;
+                color: black;
+            }
+            .maindesc{
+                font-family: Calibri;
+                color: lightgrey;
+                text-shadow: 1px 1px 2px black;
+            }
+            a{
+                color:lightgrey;
+                font-style: italic;
+            }
+        </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1><img width=100 src="https://cdn.creazilla.com/cliparts/3151064/aerial-lift-bridge-clipart-xl.png">Various Attractions of Duluth, MN</h1>
+        <h3 class="maindesc">Welcome to Duluth, Minnesota, the gateway to Lake Superior! The area offers a variety of places to see. Seen below are several popular attractions in and around the city.  These attractions are catagorized into three different types (seen below) in order meet everybody's unique interests. We hope that you enjoy our great city during your stay!</h3>
+        <h2><img width=50 src="icons/historic.png">Historic Attractions<img width=50 src="icons/outdoor.png">Outdoor Attractions<img width=50 src="icons/other.png">Other Attractions</h2>
+    </div>
+
+    <!-- defined the map size and stylization -->
+    <div id="map" style="width: 1400px; height: 480px; border: 4px solid gray; box-shadow: 0px 0px 8px black;"></div><br>
+
+    <a href="https://www.flaticon.com/free-icons/hiking" title="hiking icons">Outdoor attractions icon created by gravisio - Flaticon</a><br>
+    <a href="https://www.flaticon.com/free-icons/landmark" title="landmark icons">Historic attractions icon created by Vector Stall - Flaticon</a><br>
+    <a href="https://www.flaticon.com/free-icons/apartment" title="apartment icons">Other attractions icon created by amonrat rungreangfangsai - Flaticon</a><br>
+
+    <!-- Leaflet JavaScript library -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        
+        // configured popups for each point
+        function attractionPopupOnEachFeature(feature, layer) {
+            const popupContent = `
+            <h3>${feature.properties.name}</h3>
+            <img width=250 src="${feature.properties.image}"></b>
+            <p>${feature.properties.description}</p>
+            <p><em>Image Source: ${feature.properties.image_source}</em></p>
+            `;
+            layer.bindPopup(popupContent);
+        }
+
+        // applies each icon to the corresponding attraction catagory
+        function attraction_icon (feature, latlng) {
+            if (feature.properties.type == 'historic') {
+            return L.marker(latlng, {icon:historicIcon});
+        }
+            else if (feature.properties.type == 'outdoor') {
+            return L.marker(latlng, {icon:outdoorIcon});
+        }
+            else {
+            return L.marker(latlng, {icon:otherIcon});
+        }}
+
+        // Initialize the map, center it on the Duluth area, and set the zoom level
+        const map = L.map('map').setView([46.7475, -92.18], 11);
+
+        // Added a fairly simple basemap
+        var CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+	        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	        subdomains: 'abcd',
+	        maxZoom: 20
+        });
+        CartoDB_Positron.addTo(map);
+
+        // defined three different markers below that correspond to different catagories of attraction
+        var historicIcon = L.icon({
+            iconUrl: 'icons/historic.png',
+            iconSize:     [38, 38], // size of the icon
+            iconAnchor:   [19, 38], // point of the icon which will correspond to marker's location
+            popupAnchor:  [0, -42] // point from which the popup should open relative to the iconAnchor
+        });
+        var outdoorIcon = L.icon({
+            iconUrl: 'icons/outdoor.png',
+            iconSize:     [38, 38], // size of the icon
+            iconAnchor:   [19, 38], // point of the icon which will correspond to marker's location
+            popupAnchor:  [0, -42] // point from which the popup should open relative to the iconAnchor
+        });
+        var otherIcon = L.icon({
+            iconUrl: 'icons/other.png',
+            iconSize:     [38, 38], // size of the icon
+            iconAnchor:   [19, 38], // point of the icon which will correspond to marker's location
+            popupAnchor:  [0, -42] // point from which the popup should open relative to the iconAnchor
+        });
+
+        // fetch the GeoJSON file
+        fetch("Duluth_Points_of_Interest3.json")
+            // convert the response into a JSON format
+            .then(function (resp) {
+                const responseJSON = resp.json()
+                console.log(responseJSON)
+                // pass along the JSON to next function
+                return responseJSON
+            })
+            .then(function(geojsonData) {
+                console.log('the geoJSON data', geojsonData)
+                L.geoJSON(geojsonData,
+                    {
+                        onEachFeature: attractionPopupOnEachFeature,
+                        pointToLayer: attraction_icon
+                    }
+                    
+                ).addTo(map);
+            })
+
+    </script>
+</body>
